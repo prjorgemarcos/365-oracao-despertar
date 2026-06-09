@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>365 Dias de Oração — Despertar 2027</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+:root{--dawn:#0f0720;--dusk:#1e0d3a;--horizon:#6b21a8;--gold:#f59e0b;--gold-light:#fde68a;--wh:#ffffff;--mu:#9ca3af;--surf:rgba(255,255,255,0.05);--surf2:rgba(255,255,255,0.09);--bdr:rgba(245,158,11,0.18);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--dawn);color:var(--wh);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(107,33,168,.35) 0%,transparent 70%),radial-gradient(ellipse 40% 30% at 10% 70%,rgba(220,38,38,.05) 0%,transparent 60%);pointer-events:none;z-index:0;}
+.app{position:relative;z-index:1;display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:290px;flex-shrink:0;background:rgba(8,3,20,.75);border-right:1px solid var(--bdr);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sb-head{padding:24px 18px 16px;border-bottom:1px solid var(--bdr);}
+.eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:8px;}
+.sb-head h1{font-family:'Cinzel',serif;font-size:17px;line-height:1.2;margin-bottom:4px;}
+.sb-head h1 span{color:var(--gold);}
+.theme-tag{font-size:10px;color:var(--mu);font-style:italic;}
+
+.sb-stats{padding:14px 18px;border-bottom:1px solid var(--bdr);display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.sstat{background:var(--surf);border-radius:8px;padding:10px;text-align:center;}
+.sstat-n{font-family:'Cinzel',serif;font-size:20px;color:var(--gold);display:block;line-height:1;margin-bottom:2px;}
+.sstat-l{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--mu);}
+
+.prog-wrap{padding:12px 18px 14px;border-bottom:1px solid var(--bdr);}
+.prog-lbl{display:flex;justify-content:space-between;font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
+.prog-track{background:rgba(255,255,255,.06);border-radius:999px;height:5px;}
+.prog-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--horizon),var(--gold));transition:width .5s;}
+
+.form-sec{padding:14px 18px;flex:1;}
+.form-title{font-family:'Cinzel',serif;font-size:11px;color:var(--gold-light);margin-bottom:12px;letter-spacing:.05em;}
+.field{margin-bottom:9px;}
+.field label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:var(--mu);margin-bottom:3px;}
+.field input,.field select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:7px 9px;color:var(--wh);font-family:'Inter',sans-serif;font-size:12px;outline:none;transition:border-color .2s;}
+.field input::placeholder{color:rgba(255,255,255,.2);}
+.field input:focus,.field select:focus{border-color:var(--gold);}
+.field select option{background:#0f0720;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.btn-add{width:100%;background:linear-gradient(135deg,var(--horizon),var(--gold));border:none;border-radius:7px;padding:9px;color:#fff;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-top:2px;transition:opacity .2s;}
+.btn-add:hover{opacity:.88;}
+.form-err{font-size:10px;color:#f87171;margin-top:6px;display:none;line-height:1.4;}
+
+/* MAIN */
+.main{flex:1;overflow-x:hidden;min-width:0;}
+.main-head{padding:20px 24px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.main-head h2{font-family:'Cinzel',serif;font-size:14px;color:var(--gold-light);flex:1;}
+.start-info{font-size:10px;color:var(--mu);}
+.start-info span{color:var(--gold);}
+
+.view-tabs{display:flex;gap:3px;background:var(--surf);border:1px solid var(--bdr);border-radius:7px;padding:3px;}
+.tab-btn{background:none;border:none;border-radius:5px;padding:5px 11px;font-size:10px;font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--mu);cursor:pointer;transition:all .15s;}
+.tab-btn.active{background:rgba(245,158,11,.15);color:var(--gold);}
+
+.ctrl-bar{padding:12px 24px;display:flex;gap:7px;border-bottom:1px solid var(--bdr);flex-wrap:wrap;}
+.search-in{flex:1;min-width:140px;background:var(--surf);border:1px solid var(--bdr);border-radius:6px;padding:7px 11px;color:var(--wh);font-family:'Inter',sans-serif;font-size:11px;outline:none;}
+.search-in::placeholder{color:rgba(255,255,255,.2);}
+.search-in:focus{border-color:var(--gold);}
+.filter-btn{background:var(--surf);border:1px solid var(--bdr);border-radius:6px;padding:7px 11px;color:var(--mu);font-size:9px;font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:all .2s;}
+.filter-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(245,158,11,.08);}
+
+/* CALENDAR */
+.cal-view{padding:20px 24px;display:none;}
+.cal-view.active{display:block;}
+.cal-legend{display:flex;gap:14px;margin-bottom:18px;flex-wrap:wrap;}
+.leg{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;}
+.leg-dot{width:10px;height:10px;border-radius:2px;}
+.months-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;}
+.month-block{background:var(--surf);border:1px solid var(--bdr);border-radius:11px;overflow:hidden;}
+.month-title{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);padding:9px 13px;background:rgba(107,33,168,.2);border-bottom:1px solid var(--bdr);letter-spacing:.07em;}
+.month-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:7px;}
+.cal-dow{text-align:center;font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.25);padding:3px 0;}
+.cal-cell{aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;position:relative;cursor:default;transition:transform .1s;}
+.cal-cell.empty{background:transparent;}
+.cal-cell.avail{background:rgba(255,255,255,.02);color:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.04);}
+.cal-cell.out{background:transparent;color:rgba(255,255,255,.06);}
+.cal-cell.has{cursor:pointer;}
+.cal-cell.has.confirmed{background:rgba(16,185,129,.22);border:1px solid rgba(16,185,129,.4);color:#34d399;font-weight:600;}
+.cal-cell.has.pending{background:rgba(107,33,168,.38);border:1px solid #6b21a8;color:var(--gold-light);font-weight:600;}
+.cal-cell.has:hover{transform:scale(1.18);z-index:2;}
+.cal-cell.today-mark{box-shadow:0 0 0 2px var(--gold);}
+.cal-cell .tip{display:none;position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:#180b30;border:1px solid var(--bdr);border-radius:7px;padding:7px 9px;white-space:nowrap;font-size:10px;color:#fff;z-index:50;pointer-events:none;text-align:left;min-width:150px;}
+.cal-cell:hover .tip{display:block;}
+.tip-date{color:var(--gold);font-size:9px;font-family:'Cinzel',serif;margin-bottom:2px;}
+.tip-name{font-weight:600;margin-bottom:1px;}
+.tip-loc{color:var(--mu);font-size:9px;}
+
+/* LIST */
+.list-view{display:none;padding:18px 24px;}
+.list-view.active{display:block;}
+.table-wrap{border:1px solid var(--bdr);border-radius:11px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:rgba(107,33,168,.18);}
+thead th{padding:9px 13px;text-align:left;font-size:8px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--bdr);cursor:pointer;user-select:none;}
+thead th:hover{color:var(--gold-light);}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--surf2);}
+tbody td{padding:9px 13px;font-size:11px;vertical-align:middle;}
+.date-badge{font-family:'Cinzel',serif;font-size:10px;color:var(--gold-light);white-space:nowrap;}
+.date-sub{font-size:9px;color:var(--mu);margin-top:1px;}
+.ch-name{font-weight:500;}
+.ch-loc{font-size:10px;color:var(--mu);margin-top:1px;}
+.juba-tag{display:inline-block;padding:2px 6px;border-radius:4px;background:rgba(107,33,168,.25);border:1px solid rgba(107,33,168,.45);font-size:9px;color:#c4b5fd;letter-spacing:.04em;white-space:nowrap;}
+.sbadge{display:inline-block;padding:2px 7px;border-radius:999px;font-size:8px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;}
+.sc{background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.3);}
+.sp{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.25);}
+.btn-ic{background:none;border:none;cursor:pointer;padding:3px;border-radius:4px;font-size:12px;color:var(--mu);transition:all .15s;}
+.btn-ic:hover{background:rgba(255,255,255,.07);color:#fff;}
+.btn-ic.del:hover{background:rgba(220,38,38,.12);color:#f87171;}
+.empty-st{text-align:center;padding:44px 20px;color:var(--mu);}
+.empty-st .ic{font-size:32px;margin-bottom:8px;}
+.empty-st p{font-size:11px;line-height:1.6;}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-ov.open{display:flex;}
+.modal{background:#170a2e;border:1px solid var(--bdr);border-radius:14px;padding:24px;width:100%;max-width:420px;}
+.modal-title{font-family:'Cinzel',serif;font-size:14px;color:var(--gold-light);margin-bottom:16px;}
+.modal-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.modal-act{display:flex;gap:8px;justify-content:flex-end;}
+.btn-cancel{background:transparent;border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:7px 15px;color:var(--mu);font-family:'Inter',sans-serif;font-size:11px;cursor:pointer;}
+.btn-save{background:linear-gradient(135deg,var(--horizon),var(--gold));border:none;border-radius:6px;padding:7px 16px;color:#fff;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(245,158,11,.18);border-radius:99px;}
+
+@media(max-width:768px){
+  .app{flex-direction:column;}
+  .sidebar{width:100%;height:auto;position:static;}
+  .months-grid{grid-template-columns:1fr;}
+  .main-head,.ctrl-bar,.cal-view,.list-view{padding-left:14px;padding-right:14px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="eyebrow">JBB · Coordenadoria de Devoção</div>
+    <h1>365 Dias de <span>Oração</span></h1>
+    <div class="theme-tag">"Voltando ao Primeiro Amor" — Despertar 2027</div>
+  </div>
+
+  <div class="sb-stats">
+    <div class="sstat"><span class="sstat-n" id="st-tot">0</span><div class="sstat-l">Cadastradas</div></div>
+    <div class="sstat"><span class="sstat-n" id="st-conf">0</span><div class="sstat-l">Confirmadas</div></div>
+    <div class="sstat"><span class="sstat-n" id="st-pend">0</span><div class="sstat-l">Pendentes</div></div>
+    <div class="sstat"><span class="sstat-n" id="st-avail">365</span><div class="sstat-l">Disponíveis</div></div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-lbl"><span>Cobertura</span><span id="prog-pct">0%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="form-sec">
+    <div class="form-title">✦ Cadastrar Igreja</div>
+    <div class="field"><label>Nome da Igreja</label><input id="f-name" placeholder="Igreja Batista de…" /></div>
+    <div class="frow">
+      <div class="field"><label>Município</label><input id="f-city" placeholder="Ex: Recife" /></div>
+      <div class="field"><label>UF</label>
+        <select id="f-state"><option value="">UF…</option>
+          <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option>
+          <option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option>
+          <option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option>
+          <option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+          <option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option>
+          <option>SE</option><option>TO</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>JUBA (nome da juventude local)</label><input id="f-juba" placeholder="Ex: JUBA-CE, JUBA Rio…" /></div>
+    <div class="field"><label>Responsável de contato</label><input id="f-contact" placeholder="Pastor / líder de jovens" /></div>
+    <div class="field"><label>Dia escolhido (1 – 365)</label><input type="number" id="f-day" min="1" max="365" placeholder="Ex: 42" /></div>
+    <div class="field"><label>Status</label>
+      <select id="f-status"><option value="pending">Pendente</option><option value="confirmed">Confirmada</option></select>
+    </div>
+    <button class="btn-add" onclick="addChurch()">+ Cadastrar Igreja</button>
+    <div class="form-err" id="form-err"></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="main-head">
+    <h2>Calendário de Oração</h2>
+    <div class="start-info">Início: <span>20 jun 2026</span> · Fim: <span>19 jun 2027</span></div>
+    <div class="view-tabs">
+      <button class="tab-btn active" id="tab-cal" onclick="setView('cal')">Calendário</button>
+      <button class="tab-btn" id="tab-list" onclick="setView('list')">Lista</button>
+    </div>
+  </div>
+
+  <div class="ctrl-bar">
+    <input class="search-in" id="search" placeholder="🔍  Buscar por nome, município, UF ou JUBA…" oninput="renderAll()" />
+    <button class="filter-btn active" id="filter-all" onclick="setFilter('all')">Todas</button>
+    <button class="filter-btn" id="filter-confirmed" onclick="setFilter('confirmed')">Confirmadas</button>
+    <button class="filter-btn" id="filter-pending" onclick="setFilter('pending')">Pendentes</button>
+  </div>
+
+  <!-- Calendar -->
+  <div class="cal-view active" id="cal-view">
+    <div class="cal-legend">
+      <div class="leg"><div class="leg-dot" style="background:rgba(16,185,129,.3);border:1px solid #34d399"></div>Confirmada</div>
+      <div class="leg"><div class="leg-dot" style="background:rgba(107,33,168,.5);border:1px solid #6b21a8"></div>Pendente</div>
+      <div class="leg"><div class="leg-dot" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)"></div>Disponível</div>
+    </div>
+    <div class="months-grid" id="months-grid"></div>
+  </div>
+
+  <!-- List -->
+  <div class="list-view" id="list-view">
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th onclick="sortBy('day')">Data ↕</th>
+          <th onclick="sortBy('name')">Igreja ↕</th>
+          <th>Município / UF</th>
+          <th>JUBA</th>
+          <th>Responsável</th>
+          <th onclick="sortBy('status')">Status ↕</th>
+          <th></th>
+        </tr></thead>
+        <tbody id="church-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- Modal -->
+<div class="modal-ov" id="modal">
+  <div class="modal">
+    <div class="modal-title">✦ Editar cadastro</div>
+    <div class="modal-grid">
+      <div class="field"><label>Nome da Igreja</label><input id="e-name" /></div>
+      <div class="mrow">
+        <div class="field"><label>Município</label><input id="e-city" /></div>
+        <div class="field"><label>UF</label>
+          <select id="e-state"><option value="">UF…</option>
+            <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option>
+            <option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option>
+            <option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option>
+            <option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+            <option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option>
+            <option>SE</option><option>TO</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>JUBA</label><input id="e-juba" /></div>
+      <div class="field"><label>Responsável</label><input id="e-contact" /></div>
+      <div class="mrow">
+        <div class="field"><label>Dia (1–365)</label><input type="number" id="e-day" min="1" max="365" /></div>
+        <div class="field"><label>Status</label>
+          <select id="e-status"><option value="pending">Pendente</option><option value="confirmed">Confirmada</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-act">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveEdit()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const START = new Date(2026,5,20); // 20 jun 2026
+const MO=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DW=['D','S','T','Q','Q','S','S'];
+
+function dayToDate(d){const r=new Date(START);r.setDate(r.getDate()+(d-1));return r;}
+function fmt(d){return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function gv(id){return document.getElementById(id).value;}
+
+let churches=JSON.parse(localStorage.getItem('jbb365v3')||'[]');
+let filter='all',view='cal',sortKey='day',sortDir=1,editId=null;
+
+function save(){localStorage.setItem('jbb365v3',JSON.stringify(churches));}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+
+function addChurch(){
+  const name=gv('f-name').trim(),city=gv('f-city').trim(),state=gv('f-state'),
+        juba=gv('f-juba').trim(),contact=gv('f-contact').trim(),
+        day=parseInt(gv('f-day')),status=gv('f-status');
+  const el=document.getElementById('form-err');
+  el.style.display='none';
+  if(!name) return showErr('Informe o nome da igreja.');
+  if(!city) return showErr('Informe o município.');
+  if(!state) return showErr('Selecione o estado (UF).');
+  if(!day||day<1||day>365) return showErr('O dia deve estar entre 1 e 365.');
+  const dup=churches.find(c=>c.day===day);
+  if(dup) return showErr(`Dia ${day} (${fmt(dayToDate(day))}) já está com: ${dup.name}.`);
+  churches.push({id:genId(),name,city,state,juba,contact,day,status});
+  churches.sort((a,b)=>a.day-b.day);
+  save();
+  ['f-name','f-city','f-juba','f-contact','f-day'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('f-state').value='';
+  document.getElementById('f-status').value='pending';
+  renderAll();updateStats();
+}
+
+function showErr(m){const el=document.getElementById('form-err');el.textContent=m;el.style.display='block';}
+
+function delChurch(id){
+  const c=churches.find(x=>x.id===id);
+  if(!confirm(`Remover "${c?.name}" do projeto?`))return;
+  churches=churches.filter(x=>x.id!==id);
+  save();renderAll();updateStats();
+}
+
+function openEdit(id){
+  const c=churches.find(x=>x.id===id);if(!c)return;
+  editId=id;
+  document.getElementById('e-name').value=c.name;
+  document.getElementById('e-city').value=c.city;
+  document.getElementById('e-state').value=c.state||'';
+  document.getElementById('e-juba').value=c.juba||'';
+  document.getElementById('e-contact').value=c.contact||'';
+  document.getElementById('e-day').value=c.day;
+  document.getElementById('e-status').value=c.status;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open');editId=null;}
+
+function saveEdit(){
+  const name=document.getElementById('e-name').value.trim(),
+        city=document.getElementById('e-city').value.trim(),
+        state=document.getElementById('e-state').value,
+        juba=document.getElementById('e-juba').value.trim(),
+        contact=document.getElementById('e-contact').value.trim(),
+        day=parseInt(document.getElementById('e-day').value),
+        status=document.getElementById('e-status').value;
+  if(!name||!city||!state||!day||day<1||day>365)return;
+  const dup=churches.find(c=>c.day===day&&c.id!==editId);
+  if(dup){alert(`Dia ${day} já ocupado por ${dup.name}.`);return;}
+  const idx=churches.findIndex(c=>c.id===editId);
+  if(idx!==-1){churches[idx]={...churches[idx],name,city,state,juba,contact,day,status};churches.sort((a,b)=>a.day-b.day);save();}
+  closeModal();renderAll();updateStats();
+}
+
+function setFilter(f){
+  filter=f;
+  ['all','confirmed','pending'].forEach(x=>{document.getElementById('filter-'+x).classList.toggle('active',x===f);});
+  renderAll();
+}
+
+function setView(v){
+  view=v;
+  document.getElementById('tab-cal').classList.toggle('active',v==='cal');
+  document.getElementById('tab-list').classList.toggle('active',v==='list');
+  document.getElementById('cal-view').classList.toggle('active',v==='cal');
+  document.getElementById('list-view').classList.toggle('active',v==='list');
+  renderAll();
+}
+
+function sortBy(k){if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=1;}renderList();}
+
+function getFiltered(){
+  const q=document.getElementById('search').value.toLowerCase();
+  return churches.filter(c=>{
+    const mf=filter==='all'||c.status===filter;
+    const mq=!q||c.name.toLowerCase().includes(q)||(c.city||'').toLowerCase().includes(q)
+      ||(c.state||'').toLowerCase().includes(q)||(c.juba||'').toLowerCase().includes(q)
+      ||(c.contact||'').toLowerCase().includes(q);
+    return mf&&mq;
+  });
+}
+
+function updateStats(){
+  const tot=churches.length,conf=churches.filter(c=>c.status==='confirmed').length,pend=tot-conf;
+  document.getElementById('st-tot').textContent=tot;
+  document.getElementById('st-conf').textContent=conf;
+  document.getElementById('st-pend').textContent=pend;
+  document.getElementById('st-avail').textContent=365-tot;
+  const pct=Math.round((tot/365)*100);
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+}
+
+function renderCalendar(){
+  const filtered=getFiltered();
+  const fids=new Set(filtered.map(c=>c.id));
+  const byDay={};churches.forEach(c=>{byDay[c.day]=c;});
+  const today=new Date();
+  const endDate=dayToDate(365);
+  let html='';
+  let cursor=new Date(START.getFullYear(),START.getMonth(),1);
+  while(cursor<=endDate){
+    const yr=cursor.getFullYear(),mo=cursor.getMonth();
+    const dim=new Date(yr,mo+1,0).getDate();
+    const fdow=new Date(yr,mo,1).getDay();
+    html+=`<div class="month-block"><div class="month-title">${MO[mo]} ${yr}</div><div class="month-days">`;
+    DW.forEach(d=>{html+=`<div class="cal-dow">${d}</div>`;});
+    for(let i=0;i<fdow;i++)html+=`<div class="cal-cell empty"></div>`;
+    for(let dom=1;dom<=dim;dom++){
+      const cellDate=new Date(yr,mo,dom);
+      const diff=Math.floor((cellDate-START)/86400000)+1;
+      const inRange=diff>=1&&diff<=365;
+      const isTdy=cellDate.toDateString()===today.toDateString();
+      const tdyCls=isTdy?' today-mark':'';
+      if(!inRange){html+=`<div class="cal-cell out">${dom}</div>`;continue;}
+      const ch=byDay[diff];
+      if(ch){
+        const vis=fids.has(ch.id);
+        const sc=ch.status==='confirmed'?'confirmed':'pending';
+        const op=vis?'':'opacity:.15;';
+        html+=`<div class="cal-cell has ${sc}${tdyCls}" style="${op}" onclick="openEdit('${ch.id}')">
+          ${dom}
+          <div class="tip">
+            <div class="tip-date">Dia ${diff} · ${fmt(cellDate)}</div>
+            <div class="tip-name">${esc(ch.name)}</div>
+            <div class="tip-loc">${esc(ch.city)}/${esc(ch.state)}${ch.juba?' · '+esc(ch.juba):''}</div>
+          </div>
+        </div>`;
+      } else {
+        html+=`<div class="cal-cell avail${tdyCls}" title="Dia ${diff} · ${fmt(cellDate)} — disponível">${dom}</div>`;
+      }
+    }
+    html+=`</div></div>`;
+    cursor=new Date(yr,mo+1,1);
+  }
+  document.getElementById('months-grid').innerHTML=html;
+}
+
+function renderList(){
+  const list=getFiltered();
+  list.sort((a,b)=>{
+    let va=a[sortKey]||'',vb=b[sortKey]||'';
+    if(sortKey==='day'){va=+va;vb=+vb;}else{va=String(va).toLowerCase();vb=String(vb).toLowerCase();}
+    return va<vb?-sortDir:va>vb?sortDir:0;
+  });
+  const tbody=document.getElementById('church-tbody');
+  if(!list.length){
+    tbody.innerHTML=`<tr><td colspan="7"><div class="empty-st"><div class="ic">🕯️</div><p>${
+      churches.length===0?'Nenhuma igreja cadastrada ainda.<br>Comece adicionando a primeira.':'Nenhum resultado para essa busca.'
+    }</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML=list.map(c=>{
+    const d=dayToDate(c.day);
+    return `<tr>
+      <td><div class="date-badge">${fmt(d)}</div><div class="date-sub">Dia ${c.day}</div></td>
+      <td><div class="ch-name">${esc(c.name)}</div></td>
+      <td><div class="ch-loc">${esc(c.city)} / ${esc(c.state)}</div></td>
+      <td>${c.juba?`<span class="juba-tag">${esc(c.juba)}</span>`:'<span style="color:var(--mu);font-size:10px">—</span>'}</td>
+      <td style="color:var(--mu);font-size:10px">${esc(c.contact||'—')}</td>
+      <td><span class="sbadge ${c.status==='confirmed'?'sc':'sp'}">${c.status==='confirmed'?'Confirmada':'Pendente'}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn-ic" onclick="openEdit('${c.id}')" title="Editar">✏️</button>
+        <button class="btn-ic del" onclick="delChurch('${c.id}')" title="Remover">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderAll(){if(view==='cal')renderCalendar();else renderList();}
+
+['f-name','f-city','f-juba','f-contact','f-day'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')addChurch();});
+});
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal();});
+
+updateStats();renderAll();
+</script>
+</body>
+</html>
