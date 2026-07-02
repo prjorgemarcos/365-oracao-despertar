@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>365 Dias de Oração — Despertar</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@400;600;700;800&display=swap');
+:root{
+  --blue:#004EB2;--orange:#FF7F2B;--lime:#C8F206;
+  --dark:#0d1b2e;--wh:#ffffff;--off:#edf0f5;--off2:#e2e8f0;
+  --mu:#64748b;--bdr:#e2e8f0;--bdr2:#cbd5e1;
+  --surf:rgba(0,78,178,.06);--surf2:rgba(0,78,178,.1);
+  --text:#1e293b;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Barlow',sans-serif;background:var(--off);color:var(--text);min-height:100vh;}
+.app{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:290px;flex-shrink:0;background:var(--blue);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sb-head{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,.12);}
+.eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--lime);font-weight:700;margin-bottom:10px;}
+.sb-head h1{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;line-height:1.1;color:var(--wh);text-transform:uppercase;letter-spacing:.02em;}
+.sb-head h1 span{color:var(--lime);}
+.sb-stats{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.12);display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.sstat{background:rgba(255,255,255,.1);border-radius:8px;padding:10px 12px;text-align:center;}
+.sstat-n{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:var(--lime);display:block;line-height:1;margin-bottom:2px;}
+.sstat-l{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.6);font-weight:600;}
+.prog-wrap{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.12);}
+.prog-lbl{display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:6px;}
+.prog-track{background:rgba(255,255,255,.15);border-radius:999px;height:6px;}
+.prog-fill{height:100%;border-radius:999px;background:var(--lime);transition:width .5s;}
+.form-sec{padding:16px 20px;flex:1;}
+.form-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--lime);margin-bottom:14px;letter-spacing:.08em;text-transform:uppercase;}
+.field{margin-bottom:10px;}
+.field label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:rgba(255,255,255,.55);font-weight:600;margin-bottom:4px;}
+.field input,.field select{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:8px 10px;color:var(--wh);font-family:'Barlow',sans-serif;font-size:12px;outline:none;transition:border-color .2s;}
+.field input::placeholder{color:rgba(255,255,255,.3);}
+.field input:focus,.field select:focus{border-color:var(--lime);background:rgba(255,255,255,.15);}
+.field select option{background:var(--blue);color:white;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.day-preview{font-size:10px;color:var(--lime);font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-left:4px;opacity:0;transition:opacity .2s;}
+.day-preview.show{opacity:1;}
+.btn-add{width:100%;background:var(--orange);border:none;border-radius:7px;padding:10px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-top:4px;letter-spacing:.05em;text-transform:uppercase;transition:filter .2s;}
+.btn-add:hover{filter:brightness(1.1);}
+.btn-add:disabled{opacity:.5;cursor:not-allowed;}
+.form-err{font-size:10px;color:#fca5a5;margin-top:6px;display:none;line-height:1.4;}
+
+/* MAIN */
+.main{flex:1;overflow-x:hidden;min-width:0;background:#e8ecf2;}
+.main-head{padding:18px 24px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--wh);}
+.main-head h2{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--blue);flex:1;text-transform:uppercase;letter-spacing:.04em;}
+.start-info{font-size:10px;color:var(--mu);}
+.start-info span{color:var(--orange);font-weight:700;}
+.view-tabs{display:flex;gap:3px;background:var(--off2);border:1px solid var(--bdr);border-radius:7px;padding:3px;}
+.tab-btn{background:none;border:none;border-radius:5px;padding:5px 12px;font-size:10px;font-family:'Barlow',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--mu);cursor:pointer;transition:all .15s;}
+.tab-btn.active{background:var(--blue);color:var(--wh);}
+.ctrl-bar{padding:12px 24px;display:flex;gap:7px;border-bottom:1px solid var(--bdr);flex-wrap:wrap;background:var(--wh);}
+.search-in{flex:1;min-width:140px;background:var(--off);border:1px solid var(--bdr2);border-radius:6px;padding:7px 11px;color:var(--text);font-family:'Barlow',sans-serif;font-size:11px;outline:none;}
+.search-in::placeholder{color:var(--mu);}
+.search-in:focus{border-color:var(--blue);}
+.filter-btn{background:var(--off);border:1px solid var(--bdr2);border-radius:6px;padding:7px 12px;color:var(--mu);font-size:9px;font-family:'Barlow',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:all .2s;}
+.filter-btn.active{border-color:var(--blue);color:var(--blue);background:var(--surf);}
+.load-msg{padding:10px 24px;font-size:11px;color:var(--mu);display:none;}
+.load-msg.error{color:#dc2626;}
+.load-msg.show{display:block;}
+
+/* CALENDAR */
+.cal-view{padding:20px 24px;display:none;background:#e8ecf2;}
+.cal-view.active{display:block;}
+.cal-legend{display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap;}
+.leg{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+.leg-dot{width:12px;height:12px;border-radius:3px;}
+.months-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;}
+.month-block{background:var(--wh);border:1px solid var(--bdr);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.month-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;color:var(--wh);padding:9px 13px;background:var(--blue);letter-spacing:.1em;text-transform:uppercase;}
+.month-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:7px;}
+.cal-dow{text-align:center;font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--mu);padding:3px 0;font-weight:700;}
+.cal-cell{aspect-ratio:1;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;position:relative;cursor:default;transition:transform .15s;}
+.cal-cell.empty{background:transparent;}
+.cal-cell.avail{background:#dde2ea;color:#94a3b8;border:1px solid #cdd4de;}
+.cal-cell.out{background:transparent;color:rgba(0,0,0,.1);}
+.cal-cell.filled{cursor:pointer;}
+.cal-cell.confirmed{background:rgba(0,78,178,.12);border:1px solid rgba(0,78,178,.35);}
+.cal-cell.pending{background:rgba(255,127,43,.12);border:1px solid rgba(255,127,43,.4);}
+.cal-cell.filled:hover{transform:scale(1.12);z-index:2;filter:brightness(.95);}
+.cal-cell.today-mark{box-shadow:0 0 0 2px var(--lime),0 0 0 3px var(--blue);}
+.cell-dom{font-size:9px;font-weight:800;line-height:1;color:var(--text);}
+.confirmed .cell-dom{color:var(--blue);}
+.pending .cell-dom{color:var(--orange);}
+.cell-dnum{font-size:6px;font-weight:700;line-height:1;margin-top:1px;letter-spacing:.03em;}
+.confirmed .cell-dnum{color:rgba(0,78,178,.6);}
+.pending .cell-dnum{color:rgba(255,127,43,.7);}
+.cal-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--dark);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 12px;white-space:nowrap;font-size:11px;color:#fff;z-index:50;pointer-events:none;text-align:left;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.cal-cell:hover .cal-tip{display:block;}
+.tip-date{color:var(--lime);font-size:9px;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em;}
+.tip-name{font-weight:700;margin-bottom:2px;}
+.tip-sub{color:rgba(255,255,255,.5);font-size:10px;margin-top:1px;}
+
+/* LIST */
+.list-view{display:none;padding:18px 24px;}
+.list-view.active{display:block;}
+.table-wrap{border:1px solid var(--bdr);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:var(--blue);}
+thead th{padding:10px 13px;text-align:left;font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--wh);border-bottom:1px solid rgba(255,255,255,.1);cursor:pointer;}
+thead th:hover{color:var(--lime);}
+tbody tr{border-bottom:1px solid var(--bdr);transition:background .15s;background:var(--wh);}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--surf);}
+tbody td{padding:10px 13px;font-size:11px;vertical-align:middle;}
+.date-b{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--blue);white-space:nowrap;}
+.date-s{font-size:9px;color:var(--mu);margin-top:1px;}
+.ch-n{font-weight:600;color:var(--text);}
+.ch-l{font-size:10px;color:var(--mu);margin-top:1px;}
+.juba-tag{display:inline-block;padding:2px 7px;border-radius:4px;background:var(--surf);border:1px solid rgba(0,78,178,.3);font-size:9px;color:var(--blue);font-weight:700;}
+.sbadge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:8px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;}
+.sc{background:rgba(0,78,178,.1);color:var(--blue);border:1px solid rgba(0,78,178,.3);}
+.sp{background:rgba(255,127,43,.1);color:var(--orange);border:1px solid rgba(255,127,43,.3);}
+.btn-ic{background:none;border:none;cursor:pointer;padding:4px;border-radius:4px;font-size:12px;color:var(--mu);transition:all .15s;}
+.btn-ic:hover{background:var(--off2);color:var(--text);}
+.btn-ic.del:hover{background:rgba(220,38,38,.08);color:#dc2626;}
+.empty-st{text-align:center;padding:44px 20px;color:var(--mu);}
+.empty-st .ic{font-size:32px;margin-bottom:8px;}
+.empty-st p{font-size:11px;line-height:1.6;}
+
+/* DASHBOARD */
+.dash-view{display:none;padding:20px 24px;}
+.dash-view.active{display:block;}
+.dash-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--blue);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;}
+.dash-legend{display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.dleg{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+.dleg-sw{width:14px;height:14px;border-radius:3px;}
+#brazil-map svg{width:100%;max-width:700px;height:auto;}
+#brazil-map .sp-path{stroke:var(--off);stroke-width:1;cursor:pointer;transition:filter .15s;}
+#brazil-map .sp-path:hover{filter:brightness(1.3);}
+.sp-label{font-family:'Barlow',sans-serif;font-size:9px;font-weight:800;fill:rgba(255,255,255,.9);pointer-events:none;text-anchor:middle;dominant-baseline:middle;}
+.map-tip{position:fixed;background:var(--dark);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 12px;font-size:11px;color:#fff;pointer-events:none;z-index:100;display:none;min-width:150px;}
+.mt-state{font-family:'Barlow Condensed',sans-serif;color:var(--lime);font-size:11px;font-weight:700;margin-bottom:3px;text-transform:uppercase;}
+.mt-count{font-size:13px;font-weight:700;}
+.mt-juba{font-size:10px;color:rgba(255,255,255,.5);margin-top:2px;}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--wh);border:1px solid var(--bdr);border-radius:14px;padding:24px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--blue);margin-bottom:16px;text-transform:uppercase;letter-spacing:.04em;}
+.modal .field label{color:var(--mu);}
+.modal .field input,.modal .field select{background:var(--off);border-color:var(--bdr2);color:var(--text);}
+.modal .field input::placeholder{color:var(--mu);}
+.modal .field input:focus,.modal .field select:focus{border-color:var(--blue);}
+.modal .field select option{background:var(--wh);color:var(--text);}
+.modal-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.modal-act{display:flex;gap:8px;justify-content:flex-end;}
+.btn-cancel{background:transparent;border:1px solid var(--bdr2);border-radius:6px;padding:8px 16px;color:var(--mu);font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;cursor:pointer;}
+.btn-cancel:hover{background:var(--off);}
+.btn-save{background:var(--blue);border:none;border-radius:6px;padding:8px 18px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;}
+.btn-save:hover{filter:brightness(1.1);}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:rgba(0,78,178,.2);border-radius:99px;}
+@media(max-width:768px){.app{flex-direction:column;}.sidebar{width:100%;height:auto;position:static;}.months-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+  <div class="sb-head">
+    <div style="margin-bottom:14px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 577.29 278.11" style="width:100%;max-width:140px;display:block;">
+  <path fill="#fff" fill-rule="evenodd" d="M76.34,174.97c0,8.16,2.54,14.38,8,19.43,5.09,5.05,12,7.77,20.36,7.77s14.9-1.94,19.99-6.22c5.09-3.89,7.63-11.27,7.63-22.16v-103.78h-43.62V.06h120.33v175.69c0,14.77-2.54,28.37-7.63,40.81-5.45,12.83-12.72,23.71-22.18,32.65-9.45,8.94-20.72,15.94-33.44,20.99-12.72,5.05-26.9,7.77-42.17,7.77s-28.72-2.33-41.44-7.39c-12.72-4.66-23.99-11.27-33.08-20.21-9.09-8.55-16.36-18.66-21.45-30.71-5.09-12.05-7.63-24.88-7.63-39.26v-26.04l76.34.39v20.21Z"/>
+  <path fill="#fff" fill-rule="evenodd" d="M577.29,168.68c0,15.64-2.9,30.18-8.36,43.62-5.44,13.46-13.44,25.09-23.25,34.9-9.81,9.81-21.82,17.09-35.26,22.55-13.82,5.44-29.08,8.36-45.44,8.36s-30.18-2.56-43.26-7.27c-4.08-1.43-7.96-3.08-11.65-4.9-1.83-.91-3.61-1.85-5.33-2.87,3.63-2.76,7.02-5.7,10.14-8.82,11.14-11.14,19.7-24,25.45-38.2,1-2.47,1.85-4.77,2.56-6.97.16-.51.34-1.02.51-1.52.34-1.07.69-2.16,1-3.25.49-1.67.94-3.36,1.36-5.04,16.69,2.23,33.12-4.97,49.3-22.11,7.27,4.37,13.21,9.87,18.72,15.71,2.76-3.23,5.53-6.48,8.29-9.7-5.62-6.09-11.84-11.68-19.35-16.11,5.88-6.64,10.63-13.5,15.02-20.44-3.41-2.59-6.82-5.17-10.25-7.76-4.28,7.2-8.74,14.2-14.49,19.79-16.29-11.19-31.38-15.44-45.29-12.95-.49-3.34-1.12-6.6-1.87-9.76-.36-1.41-.73-2.83-1.11-4.21l-.02-.04c-.09-.29-.16-.58-.25-.87-.8-2.83-1.65-5.37-2.54-7.78-5.22-14.02-12.46-26.32-21.53-36.57l-.13-.15c-8.94-9.74-19.99-17.85-32.8-24.05l-.25-.11c-9.2-4.15-19.19-6.8-29.82-7.91V0h70.89v87.61c.96-1.47,2.03-2.88,3.23-4.24,4.68-5.33,11.12-9.72,18.94-13.21,9.81-4.35,20.71-6.53,33.09-6.53,13.44,0,26.17,2.54,37.44,7.62,11.26,5.46,21.46,12.73,29.8,21.82,8.36,9.45,14.91,20.71,19.64,33.45,4.72,12.72,6.89,26.9,6.89,42.16Z"/>
+  <path fill="#fff" d="M438.03,148.58c-.69-4.88-1.67-9.61-2.94-14.17-.76-2.68-1.6-5.31-2.56-7.89-4.73-12.73-11.28-24-19.64-33.45-8.34-9.09-18.54-16.36-29.8-21.82-11.26-5.08-24-7.62-37.44-7.62h-.98c-11.97.11-22.55,2.29-32.11,6.53-7.82,3.48-14.26,7.87-18.94,13.21-1.2,1.36-2.27,2.78-3.23,4.24V0h-70.89v179.96c0,11.65,1.72,22.58,5.39,32.76.76,2.19,1.65,4.35,2.61,6.49,5.44,11.99,12.72,22.55,22.17,31.27,6.58,6.08,14.06,11.26,22.53,15.45,3.68,1.81,7.56,3.46,11.65,4.9,13.08,4.72,27.63,7.27,43.26,7.27s31.62-2.92,45.44-8.36c5.88-2.39,11.5-5.13,16.78-8.29,6.77-4.03,12.97-8.74,18.48-14.26,9.81-9.81,17.81-21.44,23.25-34.9.85-2.1,1.65-4.24,2.36-6.4,1-2.94,1.87-5.91,2.61-8.96-9.78-3.41-19.66-9.98-29.6-19.61,9.7-14.33,20.24-23.96,31.6-28.75ZM354.74,201.04c-2.03,2.36-4.19,4.37-6.49,6-5.51,3.99-11.88,5.99-19.32,5.99-2.36,0-4.61-.2-6.75-.6-7.44-1.38-13.62-5.19-18.7-11.39-6.91-7.64-10.18-17.81-10.18-30.17s3.27-22.55,10.18-30.55c5.62-6.55,12.57-10.41,21.08-11.37,1.41-.18,2.87-.25,4.37-.25,5.88,0,11.08,1.25,15.74,3.68,3.68,1.9,7.02,4.57,10.07,7.94,6.91,8,10.18,18.18,10.18,30.55s-3.27,22.53-10.18,30.17Z"/>
+</svg></div>
+    <div class="eyebrow">Coordenadoria de Devoção</div>
+    <h1>365 Dias de <span>Oração</span></h1>
+  </div>
+  <div class="sb-stats">
+    <div class="sstat"><span class="sstat-n" id="st-tot">0</span><div class="sstat-l">Cadastradas</div></div>
+    <div class="sstat"><span class="sstat-n" id="st-conf">0</span><div class="sstat-l">Confirmadas</div></div>
+    <div class="sstat"><span class="sstat-n" id="st-pend">0</span><div class="sstat-l">Pendentes</div></div>
+    <div class="sstat"><span class="sstat-n" id="st-avail">365</span><div class="sstat-l">Disponíveis</div></div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-lbl"><span>Cobertura</span><span id="prog-pct">0%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div class="form-sec">
+    <div class="form-title">✦ Cadastrar Igreja</div>
+    <div class="field"><label>Nome da Igreja</label><input id="f-name" placeholder="Igreja Batista de…" /></div>
+    <div class="frow">
+      <div class="field"><label>Município</label><input id="f-city" placeholder="Ex: Recife" /></div>
+      <div class="field"><label>UF</label>
+        <select id="f-state"><option value="">UF…</option>
+          <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option>
+          <option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option>
+          <option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option>
+          <option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+          <option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option>
+          <option>SE</option><option>TO</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>JUBA</label><input id="f-juba" placeholder="Ex: JUBA-CE, JUBA Rio…" /></div>
+    <div class="field"><label>Responsável</label><input id="f-contact" placeholder="Pastor / líder de jovens" /></div>
+    <div class="field"><label>WhatsApp</label><input id="f-whatsapp" placeholder="(11) 99999-9999" /></div>
+    <div class="field">
+      <label>Dia (1–365) <span class="day-preview" id="f-day-prev"></span></label>
+      <input type="number" id="f-day" min="1" max="365" placeholder="Ex: 42" oninput="previewDay('f-day','f-day-prev')" />
+    </div>
+    <div class="field"><label>Status</label>
+      <select id="f-status"><option value="confirmed">Confirmada</option><option value="pending">Pendente</option></select>
+    </div>
+    <button class="btn-add" id="btn-add" onclick="addChurch()">+ Cadastrar Igreja</button>
+    <div class="form-err" id="form-err"></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="main-head">
+    <div style="margin-right:12px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 577.29 278.11" style="width:100%;max-width:100px;display:block;">
+  <path fill="#004EB2" fill-rule="evenodd" d="M76.34,174.97c0,8.16,2.54,14.38,8,19.43,5.09,5.05,12,7.77,20.36,7.77s14.9-1.94,19.99-6.22c5.09-3.89,7.63-11.27,7.63-22.16v-103.78h-43.62V.06h120.33v175.69c0,14.77-2.54,28.37-7.63,40.81-5.45,12.83-12.72,23.71-22.18,32.65-9.45,8.94-20.72,15.94-33.44,20.99-12.72,5.05-26.9,7.77-42.17,7.77s-28.72-2.33-41.44-7.39c-12.72-4.66-23.99-11.27-33.08-20.21-9.09-8.55-16.36-18.66-21.45-30.71-5.09-12.05-7.63-24.88-7.63-39.26v-26.04l76.34.39v20.21Z"/>
+  <path fill="#004EB2" fill-rule="evenodd" d="M577.29,168.68c0,15.64-2.9,30.18-8.36,43.62-5.44,13.46-13.44,25.09-23.25,34.9-9.81,9.81-21.82,17.09-35.26,22.55-13.82,5.44-29.08,8.36-45.44,8.36s-30.18-2.56-43.26-7.27c-4.08-1.43-7.96-3.08-11.65-4.9-1.83-.91-3.61-1.85-5.33-2.87,3.63-2.76,7.02-5.7,10.14-8.82,11.14-11.14,19.7-24,25.45-38.2,1-2.47,1.85-4.77,2.56-6.97.16-.51.34-1.02.51-1.52.34-1.07.69-2.16,1-3.25.49-1.67.94-3.36,1.36-5.04,16.69,2.23,33.12-4.97,49.3-22.11,7.27,4.37,13.21,9.87,18.72,15.71,2.76-3.23,5.53-6.48,8.29-9.7-5.62-6.09-11.84-11.68-19.35-16.11,5.88-6.64,10.63-13.5,15.02-20.44-3.41-2.59-6.82-5.17-10.25-7.76-4.28,7.2-8.74,14.2-14.49,19.79-16.29-11.19-31.38-15.44-45.29-12.95-.49-3.34-1.12-6.6-1.87-9.76-.36-1.41-.73-2.83-1.11-4.21l-.02-.04c-.09-.29-.16-.58-.25-.87-.8-2.83-1.65-5.37-2.54-7.78-5.22-14.02-12.46-26.32-21.53-36.57l-.13-.15c-8.94-9.74-19.99-17.85-32.8-24.05l-.25-.11c-9.2-4.15-19.19-6.8-29.82-7.91V0h70.89v87.61c.96-1.47,2.03-2.88,3.23-4.24,4.68-5.33,11.12-9.72,18.94-13.21,9.81-4.35,20.71-6.53,33.09-6.53,13.44,0,26.17,2.54,37.44,7.62,11.26,5.46,21.46,12.73,29.8,21.82,8.36,9.45,14.91,20.71,19.64,33.45,4.72,12.72,6.89,26.9,6.89,42.16Z"/>
+  <path fill="#004EB2" d="M438.03,148.58c-.69-4.88-1.67-9.61-2.94-14.17-.76-2.68-1.6-5.31-2.56-7.89-4.73-12.73-11.28-24-19.64-33.45-8.34-9.09-18.54-16.36-29.8-21.82-11.26-5.08-24-7.62-37.44-7.62h-.98c-11.97.11-22.55,2.29-32.11,6.53-7.82,3.48-14.26,7.87-18.94,13.21-1.2,1.36-2.27,2.78-3.23,4.24V0h-70.89v179.96c0,11.65,1.72,22.58,5.39,32.76.76,2.19,1.65,4.35,2.61,6.49,5.44,11.99,12.72,22.55,22.17,31.27,6.58,6.08,14.06,11.26,22.53,15.45,3.68,1.81,7.56,3.46,11.65,4.9,13.08,4.72,27.63,7.27,43.26,7.27s31.62-2.92,45.44-8.36c5.88-2.39,11.5-5.13,16.78-8.29,6.77-4.03,12.97-8.74,18.48-14.26,9.81-9.81,17.81-21.44,23.25-34.9.85-2.1,1.65-4.24,2.36-6.4,1-2.94,1.87-5.91,2.61-8.96-9.78-3.41-19.66-9.98-29.6-19.61,9.7-14.33,20.24-23.96,31.6-28.75ZM354.74,201.04c-2.03,2.36-4.19,4.37-6.49,6-5.51,3.99-11.88,5.99-19.32,5.99-2.36,0-4.61-.2-6.75-.6-7.44-1.38-13.62-5.19-18.7-11.39-6.91-7.64-10.18-17.81-10.18-30.17s3.27-22.55,10.18-30.55c5.62-6.55,12.57-10.41,21.08-11.37,1.41-.18,2.87-.25,4.37-.25,5.88,0,11.08,1.25,15.74,3.68,3.68,1.9,7.02,4.57,10.07,7.94,6.91,8,10.18,18.18,10.18,30.55s-3.27,22.53-10.18,30.17Z"/>
+</svg></div>
+    <h2>Calendário de Oração</h2>
+    <div class="start-info">Início: <span>20 jul 2026</span> · Fim: <span>19 jul 2027</span></div>
+    <div class="view-tabs">
+      <button class="tab-btn active" id="tab-cal" onclick="setView('cal')">Calendário</button>
+      <button class="tab-btn" id="tab-list" onclick="setView('list')">Lista</button>
+      <button class="tab-btn" id="tab-dash" onclick="setView('dash')">Dashboard</button>
+    </div>
+  </div>
+  <div class="ctrl-bar" id="ctrl-bar">
+    <input class="search-in" id="search" placeholder="🔍  Buscar por nome, município, UF ou JUBA…" oninput="renderCurrent()" />
+    <button class="filter-btn active" id="filter-all" onclick="setFilter('all')">Todas</button>
+    <button class="filter-btn" id="filter-confirmed" onclick="setFilter('confirmed')">Confirmadas</button>
+  </div>
+  <div class="load-msg" id="load-msg"></div>
+
+  <div class="cal-view active" id="cal-view">
+    <div class="cal-legend">
+      <div class="leg"><div class="leg-dot" style="background:rgba(0,78,178,.4);border:1px solid #004EB2"></div>Confirmada</div>
+      <div class="leg"><div class="leg-dot" style="background:rgba(255,127,43,.4);border:1px solid #FF7F2B"></div>Pendente</div>
+      <div class="leg"><div class="leg-dot" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)"></div>Disponível</div>
+    </div>
+    <div class="months-grid" id="months-grid"></div>
+  </div>
+
+  <div class="list-view" id="list-view">
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th onclick="sortBy('day')">Data ↕</th>
+        <th onclick="sortBy('name')">Igreja ↕</th>
+        <th>Município / UF</th><th>JUBA</th><th>Responsável</th>
+        <th onclick="sortBy('status')">Status ↕</th><th></th>
+      </tr></thead>
+      <tbody id="church-tbody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="dash-view" id="dash-view">
+    <div class="dash-title">✦ Cobertura por Estado</div>
+    <div class="dash-legend">
+      <div class="dleg"><div class="dleg-sw" style="background:rgba(0,78,178,.08);border:1px solid #e2e8f0"></div>0</div>
+      <div class="dleg"><div class="dleg-sw" style="background:rgba(0,78,178,.35)"></div>1</div>
+      <div class="dleg"><div class="dleg-sw" style="background:rgba(0,78,178,.6)"></div>2–4</div>
+      <div class="dleg"><div class="dleg-sw" style="background:#004EB2"></div>5+</div>
+    </div>
+    <div id="brazil-map"></div>
+    <div class="map-tip" id="map-tip"></div>
+  </div>
+</main>
+</div>
+
+<div class="modal-ov" id="modal">
+  <div class="modal">
+    <div class="modal-title">✦ Editar cadastro</div>
+    <div class="modal-grid">
+      <div class="field"><label>Nome da Igreja</label><input id="e-name" /></div>
+      <div class="mrow">
+        <div class="field"><label>Município</label><input id="e-city" /></div>
+        <div class="field"><label>UF</label>
+          <select id="e-state"><option value="">UF…</option>
+            <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option>
+            <option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option>
+            <option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option>
+            <option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+            <option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option>
+            <option>SE</option><option>TO</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>JUBA</label><input id="e-juba" /></div>
+      <div class="field"><label>Responsável</label><input id="e-contact" /></div>
+      <div class="field"><label>WhatsApp</label><input id="e-whatsapp" /></div>
+      <div class="mrow">
+        <div class="field">
+          <label>Dia (1–365) <span class="day-preview" id="e-day-prev"></span></label>
+          <input type="number" id="e-day" min="1" max="365" oninput="previewDay('e-day','e-day-prev')" />
+        </div>
+        <div class="field"><label>Status</label>
+          <select id="e-status"><option value="confirmed">Confirmada</option><option value="pending">Pendente</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-act">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveEdit()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var START = new Date(2026,6,20);
+var MO = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+var DW = ['D','S','T','Q','Q','S','S'];
+var API_URL = 'https://script.google.com/macros/s/AKfycbxsoP-FAqw6ohV4K8Son4TAAIY7Va8-tHQhb_yh6e4JQ0_M5EDCxUGfI6BDQEEYU5AYmA/exec';
+
+var STATE_NAMES = {AC:'Acre',AL:'Alagoas',AP:'Amapá',AM:'Amazonas',BA:'Bahia',CE:'Ceará',DF:'Distrito Federal',ES:'Espírito Santo',GO:'Goiás',MA:'Maranhão',MT:'Mato Grosso',MS:'Mato Grosso do Sul',MG:'Minas Gerais',PA:'Pará',PB:'Paraíba',PR:'Paraná',PE:'Pernambuco',PI:'Piauí',RJ:'Rio de Janeiro',RN:'Rio Grande do Norte',RS:'Rio Grande do Sul',RO:'Rondônia',RR:'Roraima',SC:'Santa Catarina',SP:'São Paulo',SE:'Sergipe',TO:'Tocantins'};
+var STATE_PATHS = {AC:'M62,480L58,495L72,510L90,518L115,512L130,520L148,510L155,495L148,478L130,468L110,462L88,465Z',AM:'M80,280L60,300L55,330L62,365L75,390L90,410L115,430L148,445L175,450L210,448L240,440L270,420L285,395L285,360L270,330L248,305L220,285L190,270L160,265L130,268L105,273Z',RR:'M150,100L130,120L118,150L115,180L122,210L140,235L165,248L190,250L212,242L228,222L230,195L222,165L208,140L188,120L168,105Z',PA:'M290,200L268,220L252,248L248,278L255,308L272,330L295,348L325,358L358,360L392,352L420,335L440,310L448,280L442,250L425,225L400,208L370,198L338,192L312,194Z',AP:'M340,100L320,118L308,142L308,168L318,190L338,202L360,205L382,196L395,178L395,155L382,133L362,115Z',TO:'M388,310L368,328L355,352L352,378L358,405L372,428L392,445L415,453L438,450L458,438L470,418L472,390L462,362L445,338L422,320L402,312Z',MA:'M450,195L428,212L412,235L408,262L415,288L432,308L455,320L480,324L505,318L525,302L535,278L532,252L518,228L498,210L472,198Z',PI:'M535,230L518,248L510,272L512,298L525,320L545,335L568,340L590,333L605,315L608,290L598,265L580,245L558,232Z',CE:'M608,222L588,238L578,260L580,285L594,305L615,315L638,312L656,298L660,275L650,252L632,235Z',RN:'M660,240L645,255L642,272L650,288L665,295L682,290L692,275L688,258L675,245Z',PB:'M635,308L618,320L615,338L625,352L642,356L660,348L668,332L660,316Z',PE:'M575,338L558,352L555,370L562,385L578,390L650,386L665,375L662,358L645,348L615,342L590,338Z',AL:'M638,388L622,400L620,415L630,426L648,428L662,418L662,402L650,390Z',SE:'M618,420L604,432L602,448L612,458L628,458L638,446L636,430Z',BA:'M465,338L445,358L435,385L432,415L438,445L452,472L472,492L498,505L528,510L558,505L582,490L598,468L604,440L598,410L580,382L555,360L525,345L495,338L468,336Z',MG:'M415,455L395,472L382,495L378,522L385,548L400,570L422,585L448,592L478,590L505,580L526,562L535,538L530,512L514,490L492,474L465,462L438,455Z',ES:'M535,490L520,505L518,522L528,536L545,538L558,526L558,508L548,494Z',RJ:'M485,590L468,602L462,618L472,630L490,632L520,625L535,610L530,595L512,586Z',SP:'M368,548L348,565L340,588L345,612L362,630L385,638L415,635L440,620L452,598L448,572L430,552L405,542L382,542Z',PR:'M322,618L302,635L295,658L302,680L320,694L345,698L372,690L390,672L388,648L372,630L348,618Z',SC:'M305,698L285,712L280,732L288,750L308,758L330,752L342,735L338,714L320,700Z',RS:'M285,755L262,770L252,792L255,818L272,835L298,840L322,832L338,812L335,785L318,765L298,755Z',MS:'M310,500L290,518L282,542L285,568L298,590L318,605L342,610L365,602L380,582L380,555L365,530L342,512L318,502Z',MT:'M230,355L208,375L198,402L198,432L210,458L230,478L258,490L288,492L315,482L335,462L340,435L332,405L312,380L285,362L258,352Z',GO:'M368,415L348,432L338,455L340,480L352,502L372,515L398,518L422,508L436,488L436,462L422,440L400,422L378,415Z',DF:'M398,468L390,476L390,486L400,490L410,485L410,472Z',RO:'M155,388L135,405L125,428L128,452L142,470L162,480L185,480L205,468L215,445L210,420L195,400L175,388Z'};
+var STATE_CENTERS = {AC:[100,492],AM:[175,365],RR:[175,178],PA:[355,280],AP:[352,155],TO:[415,382],MA:[475,262],PI:[560,285],CE:[620,270],RN:[665,268],PB:[640,332],PE:[610,365],AL:[642,408],SE:[618,440],BA:[512,425],MG:[455,525],ES:[538,515],RJ:[495,610],SP:[392,590],PR:[342,658],SC:[308,728],RS:[295,798],MS:[325,555],MT:[268,425],GO:[388,465],DF:[400,478],RO:[170,438]};
+
+var churches = [], filter = 'all', view = 'cal', sortKey = 'day', sortDir = 1, editId = null, saving = false;
+
+function dayToDate(d){ var r=new Date(START); r.setDate(r.getDate()+(d-1)); return r; }
+function fmt(d){ return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function gv(id){ return document.getElementById(id).value; }
+function genId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2); }
+
+function showMsg(msg, isError){
+  var el = document.getElementById('load-msg');
+  el.textContent = msg;
+  el.className = 'load-msg' + (msg?' show':'') + (isError?' error':'');
+}
+
+function previewDay(inId, prevId){
+  var d = parseInt(document.getElementById(inId).value);
+  var el = document.getElementById(prevId);
+  if(d>=1&&d<=365){ el.textContent='→ '+fmt(dayToDate(d)); el.className='day-preview show'; }
+  else { el.textContent=''; el.className='day-preview'; }
+}
+
+async function apiCall(payload){
+  if(payload.action==='list'){
+    var r = await fetch(API_URL+'?action=list');
+    return r.json();
+  }
+  var form = new URLSearchParams();
+  form.append('payload', JSON.stringify(payload));
+  var r = await fetch(API_URL, {method:'POST', body:form});
+  return r.json();
+}
+
+async function loadChurches(){
+  showMsg('Carregando igrejas...');
+  try {
+    var data = await apiCall({action:'list'});
+    churches = (data.churches||[]).map(function(c){
+      return {id:c.id,name:c.name,city:c.city,state:c.state,juba:c.juba,contact:c.contact,whatsapp:c.whatsapp,day:parseInt(c.day)||0,status:c.status};
+    });
+    churches.sort(function(a,b){return a.day-b.day;});
+    showMsg('');
+  } catch(e) {
+    showMsg('Erro ao conectar com a planilha. Verifique o Apps Script.', true);
+  }
+  updateStats();
+  renderCurrent();
+}
+
+function setBtnState(on){
+  saving=on;
+  var b=document.getElementById('btn-add');
+  b.disabled=on; b.textContent=on?'Salvando...':'+ Cadastrar Igreja';
+}
+
+async function addChurch(){
+  if(saving) return;
+  var name=gv('f-name').trim(), city=gv('f-city').trim(), state=gv('f-state'),
+      juba=gv('f-juba').trim(), contact=gv('f-contact').trim(),
+      whatsapp=gv('f-whatsapp').trim(), day=parseInt(gv('f-day')), status=gv('f-status');
+  var el=document.getElementById('form-err'); el.style.display='none';
+  if(!name) return showErr('Informe o nome da igreja.');
+  if(!city) return showErr('Informe o município.');
+  if(!state) return showErr('Selecione o estado (UF).');
+  if(!day||day<1||day>365) return showErr('O dia deve estar entre 1 e 365.');
+  var dup=churches.find(function(c){return c.day===day;});
+  if(dup) return showErr('Dia '+day+' ('+fmt(dayToDate(day))+') já está com: '+dup.name);
+  var church={id:genId(),name:name,city:city,state:state,juba:juba,contact:contact,whatsapp:whatsapp,day:day,status:status};
+  setBtnState(true);
+  try {
+    await apiCall({action:'save',church:church});
+    churches.push(church);
+    churches.sort(function(a,b){return a.day-b.day;});
+    ['f-name','f-city','f-juba','f-contact','f-whatsapp','f-day'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('f-state').value='';
+    document.getElementById('f-status').value='confirmed';
+    var p=document.getElementById('f-day-prev'); p.textContent=''; p.className='day-preview';
+    updateStats(); renderCurrent();
+  } catch(e){ showErr('Erro ao salvar. Tente novamente.'); }
+  finally { setBtnState(false); }
+}
+
+function showErr(m){ var el=document.getElementById('form-err'); el.textContent=m; el.style.display='block'; }
+
+async function delChurch(id){
+  var c=churches.find(function(x){return x.id===id;});
+  if(!confirm('Remover "'+c.name+'" do projeto?')) return;
+  try {
+    await apiCall({action:'delete',id:id});
+    churches=churches.filter(function(x){return x.id!==id;});
+    updateStats(); renderCurrent();
+  } catch(e){ alert('Erro ao remover.'); }
+}
+
+function openEdit(id){
+  var c=churches.find(function(x){return x.id===id;}); if(!c) return;
+  editId=id;
+  document.getElementById('e-name').value=c.name;
+  document.getElementById('e-city').value=c.city;
+  document.getElementById('e-state').value=c.state||'';
+  document.getElementById('e-juba').value=c.juba||'';
+  document.getElementById('e-contact').value=c.contact||'';
+  document.getElementById('e-whatsapp').value=c.whatsapp||'';
+  document.getElementById('e-day').value=c.day;
+  document.getElementById('e-status').value=c.status;
+  previewDay('e-day','e-day-prev');
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(){ document.getElementById('modal').classList.remove('open'); editId=null; }
+
+async function saveEdit(){
+  var name=document.getElementById('e-name').value.trim(),
+      city=document.getElementById('e-city').value.trim(),
+      state=document.getElementById('e-state').value,
+      juba=document.getElementById('e-juba').value.trim(),
+      contact=document.getElementById('e-contact').value.trim(),
+      whatsapp=document.getElementById('e-whatsapp').value.trim(),
+      day=parseInt(document.getElementById('e-day').value),
+      status=document.getElementById('e-status').value;
+  if(!name||!city||!state||!day||day<1||day>365) return;
+  var dup=churches.find(function(c){return c.day===day&&c.id!==editId;});
+  if(dup){ alert('Dia '+day+' já ocupado por '+dup.name); return; }
+  var idx=churches.findIndex(function(c){return c.id===editId;}); if(idx===-1) return;
+  var updated={id:churches[idx].id,name:name,city:city,state:state,juba:juba,contact:contact,whatsapp:whatsapp,day:day,status:status};
+  try {
+    await apiCall({action:'save',church:updated});
+    churches[idx]=updated;
+    churches.sort(function(a,b){return a.day-b.day;});
+    closeModal(); updateStats(); renderCurrent();
+  } catch(e){ alert('Erro ao salvar.'); }
+}
+
+function setFilter(f){
+  filter=f;
+  ['all','confirmed'].forEach(function(x){
+    document.getElementById('filter-'+x).classList.toggle('active',x===f);
+  });
+  renderCurrent();
+}
+
+function setView(v){
+  view=v;
+  ['cal','list','dash'].forEach(function(x){
+    var tb=document.getElementById('tab-'+x); if(tb) tb.classList.toggle('active',v===x);
+    var vw=document.getElementById(x+'-view'); if(vw) vw.classList.toggle('active',v===x);
+  });
+  var ctrl=document.getElementById('ctrl-bar');
+  if(ctrl) ctrl.style.display=(v==='dash')?'none':'flex';
+  renderCurrent();
+}
+
+function sortBy(k){ if(sortKey===k) sortDir*=-1; else{sortKey=k;sortDir=1;} renderList(); }
+
+function getFiltered(){
+  var q=document.getElementById('search').value.toLowerCase();
+  return churches.filter(function(c){
+    var mf=filter==='all'||c.status===filter;
+    var mq=!q||c.name.toLowerCase().includes(q)||(c.city||'').toLowerCase().includes(q)
+      ||(c.state||'').toLowerCase().includes(q)||(c.juba||'').toLowerCase().includes(q)
+      ||(c.contact||'').toLowerCase().includes(q);
+    return mf&&mq;
+  });
+}
+
+function updateStats(){
+  var tot=churches.length, conf=churches.filter(function(c){return c.status==='confirmed';}).length;
+  document.getElementById('st-tot').textContent=tot;
+  document.getElementById('st-conf').textContent=conf;
+  document.getElementById('st-pend').textContent=tot-conf;
+  document.getElementById('st-avail').textContent=365-tot;
+  var pct=Math.round((tot/365)*100);
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+}
+
+function renderCurrent(){
+  if(view==='cal') renderCalendar();
+  else if(view==='list') renderList();
+  else if(view==='dash') renderDashboard();
+}
+
+function renderCalendar(){
+  var fids=new Set(getFiltered().map(function(c){return c.id;}));
+  var byDay={};
+  churches.forEach(function(c){ byDay[c.day]=c; });
+  var today=new Date();
+  var endDate=dayToDate(365);
+  var html='';
+  var cursor=new Date(START.getFullYear(),START.getMonth(),1);
+  while(cursor<=endDate){
+    var yr=cursor.getFullYear(), mo=cursor.getMonth();
+    var dim=new Date(yr,mo+1,0).getDate(), fdow=new Date(yr,mo,1).getDay();
+    html+='<div class="month-block"><div class="month-title">'+MO[mo]+' '+yr+'</div><div class="month-days">';
+    DW.forEach(function(d){ html+='<div class="cal-dow">'+d+'</div>'; });
+    for(var i=0;i<fdow;i++) html+='<div class="cal-cell empty"></div>';
+    for(var dom=1;dom<=dim;dom++){
+      var cd=new Date(yr,mo,dom);
+      var diff=Math.floor((cd-START)/86400000)+1;
+      var inRange=diff>=1&&diff<=365;
+      var tdy=cd.toDateString()===today.toDateString();
+      var tc=tdy?' today-mark':'';
+      if(!inRange){ html+='<div class="cal-cell out">'+dom+'</div>'; continue; }
+      var ch=byDay[diff];
+      if(ch){
+        var vis=fids.has(ch.id);
+        var sc=ch.status==='confirmed'?'confirmed':'pending';
+        var dateStr=fmt(cd);
+        var tipHtml='<div class="cal-tip">'
+          +'<div class="tip-date">'+dateStr+' · Dia '+diff+'</div>'
+          +'<div class="tip-name">'+esc(ch.name)+'</div>'
+          +'<div class="tip-sub">'+esc(ch.city)+'/'+esc(ch.state)+(ch.juba?' · '+esc(ch.juba):'')+'</div>'
+          +(ch.contact?'<div class="tip-sub">'+esc(ch.contact)+(ch.whatsapp?' · '+esc(ch.whatsapp):'')+'</div>':'')
+          +'</div>';
+        html+='<div class="cal-cell filled '+sc+tc+'"'
+          +(vis?'':' style="opacity:.2"')
+          +' onclick="openEdit(\''+ch.id+'\')">'
+          +'<div class="cell-dom">'+dom+'</div>'
+          +'<div class="cell-dnum">D.'+diff+'</div>'
+          +tipHtml
+          +'</div>';
+      } else {
+        html+='<div class="cal-cell avail'+tc+'" title="Dia '+diff+' · '+fmt(cd)+' — disponível">'+dom+'</div>';
+      }
+    }
+    html+='</div></div>';
+    cursor=new Date(yr,mo+1,1);
+  }
+  document.getElementById('months-grid').innerHTML=html;
+}
+
+function renderList(){
+  var list=getFiltered();
+  list.sort(function(a,b){
+    var va=a[sortKey]||'', vb=b[sortKey]||'';
+    if(sortKey==='day'){va=+va;vb=+vb;}else{va=String(va).toLowerCase();vb=String(vb).toLowerCase();}
+    return va<vb?-sortDir:va>vb?sortDir:0;
+  });
+  var tbody=document.getElementById('church-tbody');
+  if(!list.length){
+    tbody.innerHTML='<tr><td colspan="7"><div class="empty-st"><div class="ic">🕯️</div><p>'
+      +(churches.length===0?'Nenhuma igreja cadastrada ainda.<br>Comece adicionando a primeira.':'Nenhum resultado.')
+      +'</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML=list.map(function(c){
+    var d=dayToDate(c.day);
+    var wl=c.whatsapp?'<a href="https://wa.me/55'+c.whatsapp.replace(/[^0-9]/g,'')+'" target="_blank" style="color:#25d366;font-size:9px;text-decoration:none;">📱 '+esc(c.whatsapp)+'</a>':'';
+    return '<tr>'
+      +'<td><div class="date-b">'+fmt(d)+'</div><div class="date-s">Dia '+c.day+'</div></td>'
+      +'<td><div class="ch-n">'+esc(c.name)+'</div></td>'
+      +'<td><div class="ch-l">'+esc(c.city)+' / '+esc(c.state)+'</div></td>'
+      +'<td>'+(c.juba?'<span class="juba-tag">'+esc(c.juba)+'</span>':'<span style="color:var(--mu)">—</span>')+'</td>'
+      +'<td style="font-size:10px"><div>'+esc(c.contact||'—')+'</div>'+wl+'</td>'
+      +'<td><span class="sbadge '+(c.status==='confirmed'?'sc':'sp')+'">'+(c.status==='confirmed'?'Confirmada':'Pendente')+'</span></td>'
+      +'<td style="white-space:nowrap">'
+      +'<button class="btn-ic" onclick="openEdit(\''+c.id+'\')">✏️</button>'
+      +'<button class="btn-ic del" onclick="delChurch(\''+c.id+'\')">🗑️</button>'
+      +'</td></tr>';
+  }).join('');
+}
+
+function renderDashboard(){
+  var byState={}, jubaByState={};
+  Object.keys(STATE_PATHS).forEach(function(uf){ byState[uf]=0; jubaByState[uf]=[]; });
+  churches.forEach(function(c){
+    var uf=(c.state||'').toUpperCase();
+    if(byState[uf]!==undefined){
+      byState[uf]++;
+      if(c.juba&&jubaByState[uf].indexOf(c.juba)===-1) jubaByState[uf].push(c.juba);
+    }
+  });
+  var maxCount=Math.max(1,Math.max.apply(null,Object.values(byState)));
+  var svg='<svg viewBox="0 0 800 900" xmlns="http://www.w3.org/2000/svg">';
+  Object.keys(STATE_PATHS).forEach(function(uf){
+    var count=byState[uf]||0;
+    var ratio=count/maxCount;
+    var color=count===0?'rgba(0,78,178,0.07)':ratio<0.2?'rgba(0,78,178,0.3)':ratio<0.5?'rgba(0,78,178,0.6)':'#004EB2';
+    var cx=STATE_CENTERS[uf][0], cy=STATE_CENTERS[uf][1];
+    svg+='<g onmouseenter="showMapTip(event,\''+uf+'\','+count+',\''+jubaByState[uf].join(',')+'\''+')" onmouseleave="hideMapTip()">';
+    svg+='<path class="sp-path" d="'+STATE_PATHS[uf]+'" fill="'+color+'"/>';
+    if(count>0) svg+='<text class="sp-label" x="'+cx+'" y="'+cy+'">'+count+'</text>';
+    svg+='<text class="sp-label" x="'+cx+'" y="'+(cy+(count>0?10:0))+'" style="font-size:7px;fill:rgba(255,255,255,'+(count>0?'.6':'.25')+')">'+uf+'</text>';
+    svg+='</g>';
+  });
+  svg+='</svg>';
+  document.getElementById('brazil-map').innerHTML=svg;
+}
+
+function showMapTip(e, uf, count, jubas){
+  var tip=document.getElementById('map-tip');
+  tip.innerHTML='<div class="mt-state">'+STATE_NAMES[uf]+' ('+uf+')</div>'
+    +'<div class="mt-count">'+count+' igreja'+(count!==1?'s':'')+'</div>'
+    +(jubas?'<div class="mt-juba">'+jubas+'</div>':'');
+  tip.style.display='block';
+  tip.style.left=(e.clientX+12)+'px';
+  tip.style.top=(e.clientY-10)+'px';
+}
+
+function hideMapTip(){
+  document.getElementById('map-tip').style.display='none';
+}
+
+['f-name','f-city','f-juba','f-contact','f-whatsapp','f-day'].forEach(function(id){
+  document.getElementById(id).addEventListener('keydown',function(e){if(e.key==='Enter') addChurch();});
+});
+document.getElementById('modal').addEventListener('click',function(e){
+  if(e.target===document.getElementById('modal')) closeModal();
+});
+
+updateStats();
+renderCalendar();
+loadChurches();
+</script>
+</body>
+</html>
